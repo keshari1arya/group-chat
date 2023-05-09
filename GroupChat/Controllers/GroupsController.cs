@@ -136,8 +136,15 @@ public class GroupsController : ControllerBase
     public ActionResult<IEnumerable<GroupMessage>> GetGroupMessages(int groupId, [FromQuery] int page = 0, [FromQuery] int pageSize = 20)
     {
         var userId = int.Parse(User.FindFirst("Id").Value);
-        var messages = _groupService.GetGroupMessagesGroupedByDate(groupId, userId, page, pageSize);
-        return Ok(messages);
+        try
+        {
+            var messages = _groupService.GetGroupMessagesGroupedByDate(groupId, userId, page, pageSize);
+            return Ok(messages);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost("{groupId}/messages")]

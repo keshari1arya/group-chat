@@ -89,7 +89,7 @@ public class GroupService : IGroupService
         if (!isMember)
         {
             // Throw an exception or return null to indicate that the user is not a member of the group
-            throw new Exception("User is not a member of the group");
+            throw new InvalidOperationException("User is not a member of the group or group does not exist");
         }
         var DbF = Microsoft.EntityFrameworkCore.EF.Functions;
 
