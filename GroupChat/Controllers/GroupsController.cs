@@ -39,7 +39,7 @@ public class GroupsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateGroup([FromBody] Group group)
+    public async Task<IActionResult> CreateGroup([FromBody] GroupRequest group)
     {
         if (!ModelState.IsValid)
         {
@@ -50,7 +50,7 @@ public class GroupsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateGroup(int id, [FromBody] Group group)
+    public async Task<IActionResult> UpdateGroup(int id, [FromBody] GroupRequest group)
     {
         if (!ModelState.IsValid)
         {
@@ -58,15 +58,15 @@ public class GroupsController : ControllerBase
         }
         if (id != group.Id)
         {
-            return BadRequest();
+            return BadRequest("Id mismatch");
         }
         try
         {
             await _groupService.UpdateGroup(group);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return NotFound();
+            return NotFound(ex.Message);
         }
         return NoContent();
     }
@@ -132,10 +132,11 @@ public class GroupsController : ControllerBase
         return Ok("User Removed Successfully");
     }
 
-    [HttpGet("{id}/messages")]
-    public async Task<ActionResult<IEnumerable<GroupMessage>>> GetMessagesForGroup(int id)
+    [HttpGet("{groupId}/messages")]
+    public ActionResult<IEnumerable<GroupMessage>> GetGroupMessages(int groupId, [FromQuery] int page = 0, [FromQuery] int pageSize = 20)
     {
-        var messages = _groupService.GetGroupMessages(id);
+        var userId = int.Parse(User.FindFirst("Id").Value);
+        var messages = _groupService.GetGroupMessagesGroupedByDate(groupId, userId, page, pageSize);
         return Ok(messages);
     }
 

@@ -1,4 +1,6 @@
+using AutoMapper;
 using GroupChat.Core;
+using GroupChat.Dto;
 using GroupChat.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,11 +13,14 @@ namespace GroupChat.Services;
 public class UserService : IUserService
 {
     private readonly ChatDbContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public UserService(ChatDbContext dbContext)
+    public UserService(ChatDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
     }
+
 
     public async Task<User> GetUserById(int id)
     {
@@ -27,28 +32,17 @@ public class UserService : IUserService
         return await _dbContext.Users.ToListAsync();
     }
 
-    public async Task<User> CreateUser(User user)
+    public async Task<User> CreateUser(UserRequest user)
     {
-        _dbContext.Users.Add(user);
+        var userEntity = _mapper.Map<User>(user);
+        _dbContext.Users.Add(userEntity);
         await _dbContext.SaveChangesAsync();
-        return user;
+        return userEntity;
     }
 
-    public async Task UpdateUser(int id, User user)
+    public async Task UpdateUser(UserRequest user)
     {
-        if (id != user.Id)
-        {
-            throw new ArgumentException("Id mismatch");
-        }
-
-        var existingUser = await _dbContext.Users.FindAsync(id);
-
-        if (existingUser == null)
-        {
-            throw new KeyNotFoundException($"User with id {id} not found");
-        }
-
-        existingUser.Name = user.Name;
+        _dbContext.Users.Update(_mapper.Map<User>(user));
 
         await _dbContext.SaveChangesAsync();
     }

@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using GroupChat.Core;
+using GroupChat.Dto;
 using GroupChat.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +9,11 @@ namespace GroupChat.Services;
 public class GroupService : IGroupService
 {
     private readonly ChatDbContext _dbContext;
-
-    public GroupService(ChatDbContext dbContext)
+    private readonly IMapper _mapper;
+    public GroupService(ChatDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<Group>> GetAllGroups()
@@ -26,15 +26,15 @@ public class GroupService : IGroupService
         return await _dbContext.Groups.FindAsync(id);
     }
 
-    public async Task CreateGroup(Group group)
+    public async Task CreateGroup(GroupRequest group)
     {
-        await _dbContext.Groups.AddAsync(group);
+        await _dbContext.Groups.AddAsync(_mapper.Map<Group>(group));
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdateGroup(Group group)
+    public async Task UpdateGroup(GroupRequest group)
     {
-        _dbContext.Groups.Update(group);
+        _dbContext.Groups.Update(_mapper.Map<Group>(group));
         await _dbContext.SaveChangesAsync();
     }
 
@@ -81,12 +81,38 @@ public class GroupService : IGroupService
         return true;
     }
 
-    public IQueryable<GroupMessage> GetGroupMessages(int groupId)
+    public IQueryable<GroupedGroupMessageResponse> GetGroupMessagesGroupedByDate(int groupId, int currentUserId, int pageIndex, int pageSize)
     {
-        return _dbContext.GroupMessages
+        // Check if the user is a member of the group
+        var isMember = _dbContext.GroupUserXREF.Any(x => x.GroupId == groupId && x.UserId == currentUserId);
+
+        if (!isMember)
+        {
+            // Throw an exception or return null to indicate that the user is not a member of the group
+            throw new Exception("User is not a member of the group");
+        }
+        var DbF = Microsoft.EntityFrameworkCore.EF.Functions;
+
+        var messages = _dbContext.GroupMessages
+        .Include(x=>x.MessageLikes)
         .Where(x => x.GroupId == groupId)
-        .OrderByDescending(x => x.SentAt);
+        .OrderByDescending(x => x.SentAt)
+        .Skip(pageIndex * pageSize)
+        .Take(pageSize).ToList();
+
+        var groupedMessages = messages.GroupBy(x => x.SentAt.Date)
+        .Select(x => new GroupedGroupMessageResponse
+        {
+            Date = x.Key,
+            Messages = _mapper.Map<List<GroupMessageResponse>>(x)
+        });
+
+        return groupedMessages.AsQueryable()
+           ;
+
     }
+
+
 
     public async Task SendMessageToGroup(int groupId, int senderId, string message)
     {

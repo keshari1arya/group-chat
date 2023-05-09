@@ -1,4 +1,5 @@
-﻿using GroupChat.Models;
+﻿using GroupChat.Dto;
+using GroupChat.Models;
 using GroupChat.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,7 @@ namespace GroupChat.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
+        public async Task<ActionResult<User>> CreateUser(UserRequest user)
         {
             var createdUser = await _userService.CreateUser(user);
 
@@ -47,10 +48,22 @@ namespace GroupChat.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User user)
+        public async Task<IActionResult> UpdateUser(int id, UserRequest user)
         {
-            await _userService.UpdateUser(id, user);
-            return NoContent();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+        {
+            await _userService.UpdateUser(user);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        return NoContent();
         }
 
         [HttpDelete("{id}")]

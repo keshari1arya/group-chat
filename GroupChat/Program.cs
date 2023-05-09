@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using GroupChat.Config;
 using GroupChat.Core;
 using GroupChat.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,6 +41,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddSingleton<IJwtAuthenticationService>(new JwtAuthenticationService(key));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 
