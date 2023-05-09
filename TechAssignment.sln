@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1705.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupChat", "GroupChat\GroupChat.csproj", "{6CA323DE-8A35-4010-BFB6-FE7EA1C9954C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E03702B1-0CF7-4CA4-9B87-494C50EE0BA8}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CA323DE-8A35-4010-BFB6-FE7EA1C9954C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CA323DE-8A35-4010-BFB6-FE7EA1C9954C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CA323DE-8A35-4010-BFB6-FE7EA1C9954C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CA323DE-8A35-4010-BFB6-FE7EA1C9954C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3452CD69-DD62-4A07-8878-31621CDCAEF7}
+	EndGlobalSection
+EndGlobal
