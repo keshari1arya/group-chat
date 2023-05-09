@@ -36,7 +36,7 @@ namespace GroupChat.Controllers
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
         [HttpPost]
@@ -56,20 +56,27 @@ namespace GroupChat.Controllers
             }
 
             try
-        {
-            await _userService.UpdateUser(user);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        return NoContent();
+            {
+                await _userService.UpdateUser(user);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            await _userService.DeleteUser(id);
+            try
+            {
+                await _userService.DeleteUser(id);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
 
             return NoContent();
         }
