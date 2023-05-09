@@ -14,5 +14,6 @@ public class AutoMapperProfile : Profile
         .ForMember(dest => dest.LikedByUsers, opt => opt.MapFrom(src => src.MessageLikes.Select(x => x.Id)));
 
         CreateMap<User, UserResponse>();
+        CreateMap<User, UserRequest>().ReverseMap();
     }
 }

@@ -11,11 +11,17 @@ namespace GroupChat.Test.Services;
 [TestClass]
 public class GroupServiceTest : BaseTest
 {
-    private readonly GroupService _groupService;
+    private readonly IGroupService _groupService;
 
     public GroupServiceTest()
     {
         _groupService = new GroupService(_dbContext, _mapper);
+    }
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        Init();
     }
 
     [TestMethod]

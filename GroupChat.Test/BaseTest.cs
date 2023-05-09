@@ -25,7 +25,6 @@ namespace GroupChat.Test
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
             _mapper = config.CreateMapper();
 
-            this.Init();
         }
 
         public void Dispose()
@@ -33,7 +32,7 @@ namespace GroupChat.Test
             _dbContext.Dispose();
         }
 
-        private void Init()
+        internal void Init()
         {
             if (_dbContext?.Users?.Any() != true)
             {
