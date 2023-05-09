@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GroupChat.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase

@@ -65,4 +65,18 @@ public class UserService : IUserService
 
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<User> Authenticate(string username, string password)
+    {
+        // For simplicity we are saving the user password in the database
+        // we can create a a method to get a oneway password hash and save.
+
+        var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Username == username && x.Password == password);
+
+        if (user == null)
+            return null;
+
+        // Authentication successful
+        return user;
+    }
 }
