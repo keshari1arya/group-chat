@@ -1,4 +1,5 @@
 using GroupChat.Dto;
+using GroupChat.Models;
 using GroupChat.Services;
 using GroupChat.Test;
 using Microsoft.EntityFrameworkCore;
@@ -84,4 +85,64 @@ public class UserServiceTest : BaseTest
         Assert.AreEqual(updatedUser.Username, result.Username);
         Assert.AreEqual(updatedUser.Password, result.Password);
     }
+
+    [TestMethod]
+    public async Task DeleteUser_Deletes_User_With_Correct_Id()
+    {
+        // Arrange
+        var user = new User { Username = "john", Password = "pass", Email = "", Name = "john" };
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        _dbContext.Entry(user).State = EntityState.Detached;
+        await _userService.DeleteUser(user.Id);
+
+        // Assert
+        var deletedUser = await _dbContext.Users.FindAsync(user.Id);
+        Assert.IsNull(deletedUser);
+    }
+
+    [TestMethod]
+    public async Task DeleteUser_Throws_Exception_If_User_With_Given_Id_Does_Not_Exist()
+    {
+        // Arrange
+
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<KeyNotFoundException>(() => _userService.DeleteUser(10000));
+    }
+
+    [TestMethod]
+    public async Task Authenticate_Returns_User_If_Credentials_Are_Correct()
+    {
+        // Arrange
+        var user = new User { Username = Guid.NewGuid().ToString(), Password = Guid.NewGuid().ToString(), Email = "", Name = "john" };
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        var authenticatedUser = await _userService.Authenticate(user.Username, user.Password);
+
+        // Assert
+        Assert.IsNotNull(authenticatedUser);
+        Assert.AreEqual(user.Id, authenticatedUser.Id);
+        Assert.AreEqual(user.Username, authenticatedUser.Username);
+        Assert.AreEqual(user.Password, authenticatedUser.Password);
+    }
+
+    [TestMethod]
+    public async Task Authenticate_Returns_Null_If_Credentials_Are_Incorrect()
+    {
+        // Arrange
+        var user = new User { Username = "john", Password = "pass", Email = "", Name = "john" };
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        var authenticatedUser = await _userService.Authenticate(user.Username, "wrongpassword");
+
+        // Assert
+        Assert.IsNull(authenticatedUser);
+    }
+
 }

@@ -143,7 +143,7 @@ public class GroupServiceTest : BaseTest
     [TestMethod]
     public void GetUsersByGroupId_ReturnsUsers_WhenGroupExists()
     {
-        // ArrangeÏ
+        // Arrange
         var createGroup = MockGroupData.GetAGroup();
 
         _dbContext.Groups.Add(createGroup);
