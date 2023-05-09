@@ -12,5 +12,7 @@ public class AutoMapperProfile : Profile
 
         CreateMap<GroupMessage, GroupMessageResponse>()
         .ForMember(dest => dest.LikedByUsers, opt => opt.MapFrom(src => src.MessageLikes.Select(x => x.Id)));
+
+        CreateMap<User, UserResponse>();
     }
 }

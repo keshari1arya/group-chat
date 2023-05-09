@@ -18,12 +18,12 @@ public class GroupService : IGroupService
 
     public async Task<IEnumerable<Group>> GetAllGroups()
     {
-        return await Task.FromResult(_dbContext.Groups.ToList());
+        return await _dbContext.Groups.AsNoTracking().ToListAsync();
     }
 
     public async Task<Group> GetGroupById(int id)
     {
-        return await _dbContext.Groups.FindAsync(id);
+        return await _dbContext.Groups.AsNoTracking().FirstAsync(x => x.Id == id);
     }
 
     public async Task CreateGroup(GroupRequest group)
@@ -48,9 +48,12 @@ public class GroupService : IGroupService
         }
     }
 
-    public IQueryable<User> GetUsersByGroupId(int groupId)
+    public IEnumerable<UserResponse> GetUsersByGroupId(int groupId)
     {
-        return _dbContext.Users.Where(x => x.GroupUserXREF.Any(x => x.GroupId == groupId));
+        var users = _dbContext.Users
+        .Where(x => x.GroupUserXREF.Any(x => x.GroupId == groupId))
+        .AsNoTracking();
+        return _mapper.Map<IEnumerable<UserResponse>>(users);
     }
 
     public async Task AddUserToGroup(int groupId, int userId)
@@ -62,7 +65,7 @@ public class GroupService : IGroupService
             throw new InvalidOperationException($"User with id {userId} is already in group with id {groupId}");
         }
 
-        group.GroupUserXREF.Add(new GroupUserXREF { GroupId = groupId, UserId = userId });
+        _dbContext.GroupUserXREF.Add(new GroupUserXREF { GroupId = groupId, UserId = userId });
         await _dbContext.SaveChangesAsync();
     }
 
@@ -81,24 +84,25 @@ public class GroupService : IGroupService
         return true;
     }
 
-    public IQueryable<GroupedGroupMessageResponse> GetGroupMessagesGroupedByDate(int groupId, int currentUserId, int pageIndex, int pageSize)
+    public IEnumerable<GroupedGroupMessageResponse> GetGroupMessagesGroupedByDate(int groupId, int currentUserId, int pageIndex, int pageSize)
     {
         // Check if the user is a member of the group
         var isMember = _dbContext.GroupUserXREF.Any(x => x.GroupId == groupId && x.UserId == currentUserId);
 
         if (!isMember)
         {
-            // Throw an exception or return null to indicate that the user is not a member of the group
             throw new InvalidOperationException("User is not a member of the group or group does not exist");
         }
         var DbF = Microsoft.EntityFrameworkCore.EF.Functions;
 
         var messages = _dbContext.GroupMessages
-        .Include(x=>x.MessageLikes)
+        .Include(x => x.MessageLikes)
         .Where(x => x.GroupId == groupId)
         .OrderByDescending(x => x.SentAt)
         .Skip(pageIndex * pageSize)
-        .Take(pageSize).ToList();
+        .Take(pageSize)
+        .AsNoTracking()
+        .ToList();
 
         var groupedMessages = messages.GroupBy(x => x.SentAt.Date)
         .Select(x => new GroupedGroupMessageResponse
@@ -107,9 +111,7 @@ public class GroupService : IGroupService
             Messages = _mapper.Map<List<GroupMessageResponse>>(x)
         });
 
-        return groupedMessages.AsQueryable()
-           ;
-
+        return groupedMessages;
     }
 
 
@@ -118,6 +120,7 @@ public class GroupService : IGroupService
     {
         var group = await _dbContext.Groups
             .Include(g => g.GroupUserXREF)
+            .AsNoTracking()
             .FirstOrDefaultAsync(g => g.Id == groupId);
 
         if (group == null)
@@ -143,7 +146,8 @@ public class GroupService : IGroupService
     }
     public async Task<bool> ToggleLikeMessage(int userId, int messageId)
     {
-        var message = await _dbContext.GroupMessages.FindAsync(messageId);
+        var message = await _dbContext.GroupMessages.AsNoTracking()
+        .FirstOrDefaultAsync(x => x.Id == messageId);
         if (message == null)
         {
             throw new KeyNotFoundException($"Message with id {messageId} not found");
@@ -155,7 +159,9 @@ public class GroupService : IGroupService
             throw new KeyNotFoundException($"User with id {userId} not found");
         }
 
-        var like = await _dbContext.MessageLikes.FirstOrDefaultAsync(x => x.GroupMessageId == messageId && x.UserId == userId);
+        var like = await _dbContext.MessageLikes
+        .AsNoTracking()
+        .FirstOrDefaultAsync(x => x.GroupMessageId == messageId && x.UserId == userId);
         if (like != null)
         {
             // User already liked the message, remove the like
@@ -179,6 +185,7 @@ public class GroupService : IGroupService
     {
         var group = _dbContext.Groups
         .Include(x => x.GroupUserXREF)
+        .AsNoTracking()
         .FirstOrDefault(x => x.Id == groupId);
         if (group == null)
         {
