@@ -16,14 +16,16 @@ public class GroupService : IGroupService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<Group>> GetAllGroups()
+    public async Task<IEnumerable<GroupResponse>> GetAllGroups()
     {
-        return await _dbContext.Groups.AsNoTracking().ToListAsync();
+        var groups =  await _dbContext.Groups.AsNoTracking().ToListAsync();
+        return _mapper.Map<IEnumerable<GroupResponse>>(groups);
     }
 
-    public async Task<Group> GetGroupById(int id)
+    public async Task<GroupResponse> GetGroupById(int id)
     {
-        return await _dbContext.Groups.AsNoTracking().FirstAsync(x => x.Id == id);
+        var group = await _dbContext.Groups.AsNoTracking().FirstAsync(x => x.Id == id);
+        return _mapper.Map<GroupResponse>(group);
     }
 
     public async Task CreateGroup(GroupRequest group)
@@ -144,6 +146,7 @@ public class GroupService : IGroupService
         await _dbContext.GroupMessages.AddAsync(groupMessage);
         await _dbContext.SaveChangesAsync();
     }
+
     public async Task<bool> ToggleLikeMessage(int userId, int messageId)
     {
         var message = await _dbContext.GroupMessages.AsNoTracking()

@@ -25,7 +25,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task GetUsers_ReturnsOkResult_WithListOfUsers()
+    public async Task ShoudGetUsers_ReturnsOkResult_WithListOfUsers()
     {
         // Arrange
         var expectedUsers = new List<User> { new User { Id = 1, Name = "John" }, new User { Id = 2, Name = "Jane" } };
@@ -42,7 +42,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task GetUser_WithValidId_ReturnsOkResult_WithUser()
+    public async Task ShoudGetUser_WithValidId_ReturnsOkResult_WithUser()
     {
         // Arrange
         var expectedUser = new User { Id = 1, Name = "John" };
@@ -58,7 +58,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task GetUser_WithInvalidId_ReturnsNotFoundResult()
+    public async Task ShoudNotGetUser_WithInvalidId_ReturnsNotFoundResult()
     {
         // Arrange
         var invalidId = 99;
@@ -72,7 +72,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task CreateUser_WithValidUser_ReturnsCreatedAtActionResult_WithNewUser()
+    public async Task ShoudCreateUser_WithValidUser_ReturnsCreatedAtActionResult_WithNewUser()
     {
         // Arrange
         var newUser = new UserRequest { Name = "John" };
@@ -91,7 +91,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task UpdateUser_WithValidUser_ReturnsNoContentResult()
+    public async Task ShoudNotUpdateUser_WithValidUser_ReturnsNoContentResult()
     {
         // Arrange
         var userId = 1;
@@ -105,7 +105,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task UpdateUser_WithInvalidUser_ReturnsBadRequestResult()
+    public async Task ShoudNotUpdateUser_WithInvalidUser_ReturnsBadRequestResult()
     {
         // Arrange
         var userId = 1;
@@ -120,7 +120,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task UpdateUser_WithNonExistingUser_ReturnsNotFoundResult()
+    public async Task ShoudNotUpdateUser_WithNonExistingUser_ReturnsNotFoundResult()
     {
         // Arrange
         var userId = 1;
@@ -136,7 +136,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task DeleteUser_WithValidId_ReturnsNoContentResult()
+    public async Task ShoudDeleteUser_WithValidId_ReturnsNoContentResult()
     {
         // Arrange
         var userId = 1;
@@ -149,7 +149,7 @@ public class UsersControllerTest
     }
 
     [TestMethod]
-    public async Task DeleteUser_WithNonExistingId_ReturnsNotFoundResult()
+    public async Task ShoudNotDeleteUser_WithNonExistingId_ReturnsNotFoundResult()
     {
         // Arrange
         var userId = 1;

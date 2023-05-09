@@ -9,12 +9,13 @@ namespace GroupChat.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class GroupsController : ControllerBase
+public class GroupController : ControllerBase
 {
-    private readonly ILogger<GroupsController> _logger;
+    // Keeping simple hence skipping logging
+    private readonly ILogger<GroupController> _logger;
     private readonly IGroupService _groupService;
 
-    public GroupsController(ILogger<GroupsController> logger, IGroupService groupService)
+    public GroupController(ILogger<GroupController> logger, IGroupService groupService)
     {
         _logger = logger;
         _groupService = groupService;
@@ -133,7 +134,7 @@ public class GroupsController : ControllerBase
     }
 
     [HttpGet("{groupId}/messages")]
-    public ActionResult<IEnumerable<GroupMessage>> GetGroupMessages(int groupId, [FromQuery] int page = 0, [FromQuery] int pageSize = 20)
+    public ActionResult GetGroupMessages(int groupId, [FromQuery] int page = 0, [FromQuery] int pageSize = 20)
     {
         var userId = int.Parse(User.FindFirst("Id").Value);
         try
@@ -164,9 +165,11 @@ public class GroupsController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    [HttpPost("users/{userId}/messages/{messageId}/like")]
-    public async Task<ActionResult> LikeGroupMessage(int userId, int messageId)
+
+    [HttpPost("messages/{messageId}/like")]
+    public async Task<ActionResult> LikeGroupMessage( int messageId)
     {
+        var userId = int.Parse(User.FindFirst("Id").Value);
         try
         {
             await _groupService.ToggleLikeMessage(userId, messageId);
@@ -177,6 +180,4 @@ public class GroupsController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
-
-
 }

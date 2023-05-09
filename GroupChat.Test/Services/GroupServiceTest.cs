@@ -25,7 +25,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task GetAllGroups_ReturnsAllGroups()
+    public async Task ShouldGetAllGroups_ReturnsAllGroups()
     {
         // Arrange
 
@@ -38,7 +38,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task GetGroupById_ReturnsCorrectGroup()
+    public async Task ShouldGetGroupById_ReturnsCorrectGroup()
     {
         // Arrange       
         var groupId = _dbContext.Groups.First().Id;
@@ -50,7 +50,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task CreateGroup_AddsNewGroupToDatabase()
+    public async Task ShouldCreateGroup_AddsNewGroupToDatabase()
     {
         // Arrange
         var group = new GroupRequest { Name = "New Group", Description = "Description" };
@@ -64,7 +64,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task UpdateGroup_UpdatesExistingGroup()
+    public async Task ShouldUpdateGroup_UpdatesExistingGroup()
     {
         // Arrange
         var group = _dbContext.Groups.First();
@@ -81,7 +81,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task DeleteGroup_DeletesExistingGroup()
+    public async Task ShouldDeleteGroup_DeletesExistingGroup()
     {
         // Arrange
         var groupIdToDelete = 2;
@@ -95,7 +95,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task DeleteGroup_DeletesGroupWithMessages()
+    public async Task ShouldDeleteGroup_DeletesGroupWithMessages()
     {
         // Arrange
 
@@ -119,7 +119,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task DeleteGroup_DeletesGroupWithLikes()
+    public async Task ShouldDeleteGroup_DeletesGroupWithLikes()
     {
         // Arrange
         var group = MockGroupData.GetAGroup();
@@ -141,7 +141,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public void GetUsersByGroupId_ReturnsUsers_WhenGroupExists()
+    public void ShouldGetUsersByGroupId_ReturnsUsers_WhenGroupExists()
     {
         // Arrange
         var createGroup = MockGroupData.GetAGroup();
@@ -165,7 +165,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task AddUserToGroup_ValidGroupAndUser_AddsUserToGroup()
+    public async Task ShouldAddUserToGroup_ValidGroupAndUser_AddsUserToGroup()
     {
         // Arrange
         var user = _dbContext.Users
@@ -216,7 +216,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task Test_RemoveUserFromGroup_WhenGroupExistsAndUserBelongsToGroup()
+    public async Task ShouldRemoveUserFromGroup_WhenGroupExistsAndUserBelongsToGroup()
     {
         // Arrange
         var createGroup = MockGroupData.GetAGroup();
@@ -237,7 +237,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task Test_RemoveUserFromGroup_WhenGroupDoesNotExist()
+    public async Task ShouldNotRemoveUserFromGroup_WhenGroupDoesNotExist()
     {
         // Arrange
         int groupId = 999333333;
@@ -248,7 +248,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task Test_RemoveUserFromGroup_WhenUserDoesNotBelongToGroup()
+    public async Task ShouldNotRemoveUserFromGroup_WhenUserDoesNotBelongToGroup()
     {
         // Arrange
         int groupId = 1;
@@ -259,7 +259,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task Test_RemoveUserFromGroup_WhenGroupIdOrUserIdIsInvalid()
+    public async Task ShouldNotRemoveUserFromGroup_WhenGroupIdOrUserIdIsInvalid()
     {
         // Arrange
         int groupId = -1;
@@ -270,7 +270,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public void GetGroupMessagesGroupedByDate_ThrowsException_IfUserNotMemberOfGroup()
+    public void ShouldNotGetGroupMessagesGroupedByDate_ThrowsException_IfUserNotMemberOfGroup()
     {
         // Arrange
         int groupId = 1;
@@ -283,7 +283,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public void GetGroupMessagesGroupedByDate_ReturnsGroupedMessages_IfUserIsMemberOfGroup()
+    public void ShouldGetGroupMessagesGroupedByDate_ReturnsGroupedMessages_IfUserIsMemberOfGroup()
     {
         // Arrange
         int pageIndex = 0;
@@ -312,7 +312,7 @@ public class GroupServiceTest : BaseTest
     }
 
     [TestMethod]
-    public async Task SendMessageToGroup_ShouldReturnTrue()
+    public async Task ShouldSendMessageToGroup_ShouldReturnTrue()
     {
         // Arrange
         var createGroup = MockGroupData.GetAGroup();

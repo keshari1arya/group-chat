@@ -7,8 +7,8 @@ namespace GroupChat.Services
 {
     public interface IGroupService
     {
-        Task<IEnumerable<Group>> GetAllGroups();
-        Task<Group> GetGroupById(int id);
+        Task<IEnumerable<GroupResponse>> GetAllGroups();
+        Task<GroupResponse> GetGroupById(int id);
         IEnumerable<UserResponse> GetUsersByGroupId(int groupId);
         Task CreateGroup(GroupRequest group);
         Task UpdateGroup(GroupRequest group);

@@ -15,5 +15,7 @@ public class AutoMapperProfile : Profile
 
         CreateMap<User, UserResponse>();
         CreateMap<User, UserRequest>().ReverseMap();
+
+        CreateMap<Group, GroupResponse>();
     }
 }
