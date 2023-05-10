@@ -42,6 +42,11 @@ namespace GroupChat.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(UserRequest user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var createdUser = await _userService.CreateUser(user);
 
             return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);

@@ -19,6 +19,11 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest model)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+
         var user = await _userService.Authenticate(model.Username, model.Password);
 
         if (user == null)

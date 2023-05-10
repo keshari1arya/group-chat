@@ -151,6 +151,10 @@ public class GroupController : ControllerBase
     [HttpPost("{groupId}/messages")]
     public async Task<IActionResult> SendMessageToGroup(int groupId, [FromBody] MessageRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         try
         {
             await _groupService.SendMessageToGroup(groupId, request.SenderId, request.Message);
